@@ -37,6 +37,8 @@ h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(32px,6vw,4
 .note{font-size:14px;color:var(--muted);margin:0;flex:1}
 .btn{margin-top:10px;display:block;text-align:center;background:var(--accent);color:var(--accent-ink);text-decoration:none;padding:11px;border-radius:12px;font-weight:600;font-size:14px}
 .btn:hover{filter:brightness(.93)}
+.store{display:inline-block;margin-top:16px;padding:9px 18px;border:1px solid var(--accent);color:var(--accent);border-radius:999px;text-decoration:none;font-weight:600;font-size:14px}
+.store:hover{background:var(--accent);color:var(--accent-ink)}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px}
 footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color:var(--muted);text-align:center}
 </style>
@@ -47,6 +49,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color
   <header>
     <h1 id="shopName">The House of Kor</h1>
     <p class="tag" id="shopTag">Things I actually use.</p>
+    <a class="store" id="storeLink" href="https://www.amazon.com/shop/helloitskortn" target="_blank" rel="sponsored noopener">Shop my full Amazon storefront →</a>
   </header>
   <div class="controls">
     <div id="chips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
@@ -66,6 +69,7 @@ const SHOP = {
   // Leave blank to use the SAMPLE products below. Fill in to load from Supabase.
   supabaseUrl: "https://mlsckxjksxmavzzhcdfs.supabase.co",
   supabaseAnonKey: "sb_publishable_WSxrEO-E5nyuEJe_qvkagw_a180qy07",
+  storefrontUrl: "https://www.amazon.com/shop/helloitskortn",
   categoryOrder: ["Hair", "Nails", "Skin"]
 };
 
@@ -80,6 +84,7 @@ const SAMPLE = [
 document.getElementById("shopName").textContent = SHOP.name;
 document.getElementById("shopTag").textContent = SHOP.tagline;
 document.title = SHOP.name;
+document.getElementById("storeLink").href = SHOP.storefrontUrl;
 document.getElementById("yr").textContent = new Date().getFullYear();
 
 let products = [], active = "All";
