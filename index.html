@@ -64,8 +64,8 @@ const SHOP = {
   name: "Kortny's Finds",
   tagline: "Hair, nails & skin things I actually use.",
   // Leave blank to use the SAMPLE products below. Fill in to load from Supabase.
-  supabaseUrl: "",        // e.g. https://abcd1234.supabase.co
-  supabaseAnonKey: "",    // the public "anon" key (safe for the browser)
+  supabaseUrl: "https://mlsckxjksxmavzzhcdfs.supabase.co",
+  supabaseAnonKey: "sb_publishable_WSxrEO-E5nyuEJe_qvkagw_a180qy07",
   categoryOrder: ["Hair", "Nails", "Skin"]
 };
 
@@ -88,7 +88,7 @@ async function load(){
   if(!SHOP.supabaseUrl || !SHOP.supabaseAnonKey) return SAMPLE;
   try{
     const r = await fetch(`${SHOP.supabaseUrl}/rest/v1/shop_products?select=*&active=eq.true&order=sort_order.asc,created_at.desc`,
-      {headers:{apikey:SHOP.supabaseAnonKey, Authorization:`Bearer ${SHOP.supabaseAnonKey}`}});
+      {headers:{apikey:SHOP.supabaseAnonKey}});
     if(!r.ok) throw new Error(r.status);
     return await r.json();
   }catch(e){ console.error("Supabase load failed", e); return []; }
