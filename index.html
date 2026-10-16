@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kortny's Finds</title>
+<meta name="description" content="Hair care, nail and skincare finds I actually use, all in one place.">
+<!-- Pinterest: paste your verification tag here when you claim shop.take24.co -->
+<!-- <meta name="p:domain_verify" content="YOUR_CODE"> -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f3ee; --card:#fffdfa; --ink:#2f2a26; --muted:#7a7068;
+  --line:#e7dfd5; --accent:#8a7360; --accent-ink:#fff; --chip:#efe7dd;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+a{color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+.disclosure{background:var(--chip);font-size:12.5px;color:var(--muted);text-align:center;padding:8px 16px}
+header{padding:48px 0 24px;text-align:center}
+h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(32px,6vw,48px);margin:0 0 6px;letter-spacing:-.5px}
+.tag{color:var(--muted);margin:0}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:24px 0 28px}
+.chip{border:1px solid var(--line);background:var(--card);padding:8px 16px;border-radius:999px;font:500 14px Inter,sans-serif;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.search{flex:1 1 220px;max-width:280px;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font:14px Inter,sans-serif}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px;padding-bottom:56px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;scroll-margin-top:20px;transition:box-shadow .2s}
+.card.hl{box-shadow:0 0 0 3px var(--accent)}
+.img{aspect-ratio:1/1;background:linear-gradient(135deg,#efe5d9,#e4d6c6);display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:Fraunces,serif}
+.img img{width:100%;height:100%;object-fit:cover}
+.body{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.cat{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);font-weight:600}
+.title{font-family:Fraunces,serif;font-size:18px;margin:0;line-height:1.25}
+.note{font-size:14px;color:var(--muted);margin:0;flex:1}
+.btn{margin-top:10px;display:block;text-align:center;background:var(--accent);color:var(--accent-ink);text-decoration:none;padding:11px;border-radius:12px;font-weight:600;font-size:14px}
+.btn:hover{filter:brightness(.93)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:13px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="disclosure">As an Amazon Associate I earn from qualifying purchases. Links on this page may earn me a small commission at no extra cost to you.</div>
+<div class="wrap">
+  <header>
+    <h1 id="shopName">Kortny's Finds</h1>
+    <p class="tag" id="shopTag">Hair, nails &amp; skin things I actually use.</p>
+  </header>
+  <div class="controls">
+    <div id="chips" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
+    <input class="search" id="q" type="search" placeholder="Search products" aria-label="Search products">
+  </div>
+  <main class="grid" id="grid"><div class="empty">Loading…</div></main>
+</div>
+<footer>
+  <div class="wrap">As an Amazon Associate I earn from qualifying purchases. Prices and availability are accurate as of when listed and are subject to change.<br>© <span id="yr"></span> HELLOITSKORTNY LLC</div>
+</footer>
+
+<script>
+/* ===== SETTINGS: edit these ===== */
+const SHOP = {
+  name: "Kortny's Finds",
+  tagline: "Hair, nails & skin things I actually use.",
+  // Leave blank to use the SAMPLE products below. Fill in to load from Supabase.
+  supabaseUrl: "",        // e.g. https://abcd1234.supabase.co
+  supabaseAnonKey: "",    // the public "anon" key (safe for the browser)
+  categoryOrder: ["Hair", "Nails", "Skin"]
+};
+
+const SAMPLE = [
+  {slug:"heat-protectant", title:"Heat Protectant Spray", category:"Hair", note:"Spritz before any hot tool. Smells amazing, no crunch.", image_url:"", amazon_url:"https://www.amazon.com/dp/EXAMPLE?tag=YOURTAG-20"},
+  {slug:"silk-scrunchies", title:"Silk Scrunchies Set", category:"Hair", note:"No dents, no breakage. I sleep in these.", image_url:"", amazon_url:"https://www.amazon.com/dp/EXAMPLE?tag=YOURTAG-20"},
+  {slug:"press-on-nails", title:"Neutral Press-On Nails", category:"Nails", note:"Salon look in 10 minutes. Lasts me about two weeks.", image_url:"", amazon_url:"https://www.amazon.com/dp/EXAMPLE?tag=YOURTAG-20"},
+  {slug:"barrier-cream", title:"Barrier Repair Moisturizer", category:"Skin", note:"My go-to when my skin is feeling dry and cranky.", image_url:"", amazon_url:"https://www.amazon.com/dp/EXAMPLE?tag=YOURTAG-20"}
+];
+/* ================================ */
+
+document.getElementById("shopName").textContent = SHOP.name;
+document.getElementById("shopTag").textContent = SHOP.tagline;
+document.title = SHOP.name;
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+let products = [], active = "All";
+
+async function load(){
+  if(!SHOP.supabaseUrl || !SHOP.supabaseAnonKey) return SAMPLE;
+  try{
+    const r = await fetch(`${SHOP.supabaseUrl}/rest/v1/shop_products?select=*&active=eq.true&order=sort_order.asc,created_at.desc`,
+      {headers:{apikey:SHOP.supabaseAnonKey, Authorization:`Bearer ${SHOP.supabaseAnonKey}`}});
+    if(!r.ok) throw new Error(r.status);
+    return await r.json();
+  }catch(e){ console.error("Supabase load failed", e); return []; }
+}
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function chips(){
+  const found = [...new Set(products.map(p=>p.category).filter(Boolean))];
+  const cats = ["All", ...SHOP.categoryOrder.filter(c=>found.includes(c)), ...found.filter(c=>!SHOP.categoryOrder.includes(c))];
+  document.getElementById("chips").innerHTML = cats.map(c=>`<button class="chip ${c===active?"on":""}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+}
+
+function render(){
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  const list = products.filter(p=>(active==="All"||p.category===active) &&
+    (!q || `${p.title} ${p.note} ${p.category}`.toLowerCase().includes(q)));
+  document.getElementById("grid").innerHTML = list.length ? list.map(p=>`
+    <article class="card" id="${esc(p.slug)}">
+      <div class="img">${p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.title)}" loading="lazy">`:esc(p.category||"")}</div>
+      <div class="body">
+        <span class="cat">${esc(p.category)}</span>
+        <h2 class="title">${esc(p.title)}</h2>
+        <p class="note">${esc(p.note)}</p>
+        <a class="btn" href="${esc(p.amazon_url)}" target="_blank" rel="sponsored noopener">Shop on Amazon</a>
+      </div>
+    </article>`).join("") : `<div class="empty">Nothing here yet.</div>`;
+}
+
+function highlightFromHash(){
+  const id = decodeURIComponent(location.hash.slice(1));
+  if(!id) return;
+  const el = document.getElementById(id);
+  if(el){ el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.add("hl"); setTimeout(()=>el.classList.remove("hl"),2500); }
+}
+
+document.getElementById("chips").addEventListener("click",e=>{
+  const b = e.target.closest(".chip"); if(!b) return;
+  active = b.dataset.c; chips(); render();
+});
+document.getElementById("q").addEventListener("input",render);
+window.addEventListener("hashchange",()=>{active="All";document.getElementById("q").value="";chips();render();highlightFromHash();});
+
+(async()=>{
+  products = await load();
+  const cat = new URLSearchParams(location.search).get("cat");
+  if(cat) active = cat;
+  chips(); render(); highlightFromHash();
+})();
+</script>
+</body>
+</html>
